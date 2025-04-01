@@ -48,6 +48,18 @@ pipeline {
                 }
             }
         }
+        stage('deploy to eks') {
+            environment {
+                AWS_ACCESS_KEY = credentials('jenkins_aws_access_key')  // Example region, change to actual value
+                AWS_SECRET_ACCESS_KEY = credentials('jenkins_aws_access_secret_key')  // Example account ID, change to actual value
+            }
+            steps {
+                script {
+                   echo 'deploying docker image to eks...'
+                   sh 'kubectl create deployment nginx-deployment --image=nginx'
+                }
+            }
+        }
 
 
     }
