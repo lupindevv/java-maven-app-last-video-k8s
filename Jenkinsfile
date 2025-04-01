@@ -51,6 +51,10 @@ pipeline {
         stage('commit version update') {
             steps {
                 script {
+                    // Configure Git user information
+                        sh 'git config --global user.name "lupin"'
+                        sh 'git config --global user.email "jenkins@yourdomain.com"'
+
                     withCredentials([usernamePassword(credentialsId: 'github-cred', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
                         sh "git remote set-url origin https://${USER}:${PASS}@github.com/lupindevv/java-maven-app-last-video-k8s.git"
                         sh 'git add .'
