@@ -1,22 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: java-maven-app
+  name: $APP_NAME
   labels:
-    app: java-maven-app
+    app: $APP_NAME
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: java-maven-app
+      app: $APP_NAME
   template:
     metadata:
       labels:
-        app: java-maven-app
+        app: $APP_NAME
     spec:
-      containers:
-        - name: java-maven-app
-          image: xxx
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 8080
+    imagePullSecrets:
+      - name: docker-hub-secret
+    containers: 
+      - name: $APP_NAME
+        image: alexthm1/java-k8s:$IMAGE_NAME
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 8080
