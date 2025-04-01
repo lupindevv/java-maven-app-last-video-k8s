@@ -48,30 +48,6 @@ pipeline {
                 }
             }
         }
-      stage('commit version update') {
-    steps {
-        script {
-            // Configure Git user information
-            sh 'git config --global user.name "lupin"'
-            sh 'git config --global user.email "jenkins@yourdomain.com"'
-
-            // Pull changes from the remote to ensure we are up to date
-            sh 'git pull origin main || echo "No changes to pull"'
-
-            // Commit changes if any
-            sh '''
-                git add .
-                git commit -m "ci: version bump" || echo "No changes to commit"
-            '''
-
-            // Push changes to remote
-            withCredentials([usernamePassword(credentialsId: 'github-cred', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                sh "git remote set-url origin https://${USER}:${PASS}@github.com/lupindevv/java-maven-app-last-video-k8s.git"
-                sh 'git push origin main'
-            }
-        }
-    }
-}
 
 
     }
