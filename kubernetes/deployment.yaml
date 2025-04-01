@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: $APP_NAME
+  name: java-app
   labels:
-    app: $APP_NAME
+    app: java-app
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: $APP_NAME
+      app: java-app
   template:
     metadata:
       labels:
-        app: $APP_NAME
+        app: java-app
     spec:
     imagePullSecrets:
       - name: docker-hub-secret
     containers: 
-      - name: $APP_NAME
+      - name: java-app
         image: alexthm1/java-k8s:$IMAGE_NAME
         imagePullPolicy: Always
         ports:

@@ -53,7 +53,7 @@ pipeline {
     environment {
         AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key')
         AWS_SECRET_ACCESS_KEY = credentials('jenkins_aws_access_secret_key')
-        APP_NAME = 'java-app'
+        
     }
     steps {
         script {
@@ -68,8 +68,10 @@ pipeline {
             sh 'aws eks update-kubeconfig --name java-app-cluster --region us-east-1'
 
             echo 'Deploying to EKS...'
-            sh 'envsubst < kubernetes/deployment.yaml | kubectl apply -f -'
-            sh 'envsubst < kubernetes/service.yaml | kubectl apply -f -'
+            sh 'kubectl apply -f kubernetes/deployment.yaml'
+            echo 'Updating service...'
+            sh 'kubectl apply -f kubernetes/service.yaml'
+            
         }
     }
 }
