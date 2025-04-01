@@ -1,9 +1,11 @@
-#!/usr/bin/env groovy
-
 pipeline {
     agent any
     tools {
         maven 'Maven'
+    }
+    environment {
+        DOCKER_REPO = 'alexthm1/java-k8s'  // Example repo name, change to actual value
+        DOCKER_REPO_SERVER = 'docker.io'  // Example Docker server, change to actual value
     }
     stages {
         stage('increment version') {
@@ -31,7 +33,7 @@ pipeline {
             steps {
                 script {
                     echo "building the docker image..."
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]){
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
                         sh "docker build -t ${DOCKER_REPO}:${IMAGE_NAME} ."
                         sh 'echo $PASS | docker login -u $USER --password-stdin ${DOCKER_REPO_SERVER}'
                         sh "docker push ${DOCKER_REPO}:${IMAGE_NAME}"
@@ -46,10 +48,10 @@ pipeline {
                 }
             }
         }
-        stage('commit version update'){
+        stage('commit version update') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'github-cred', passwordVariable: 'PASS', usernameVariable: 'USER')]){
+                    withCredentials([usernamePassword(credentialsId: 'github-cred', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
                         sh "git remote set-url origin https://${USER}:${PASS}@github.com/lupindevv/java-maven-app-last-video-k8s.git"
                         sh 'git add .'
                         sh 'git commit -m "ci: version bump"'
