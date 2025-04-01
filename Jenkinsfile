@@ -49,20 +49,30 @@ pipeline {
                 }
             }
         }
-        stage('deploy to eks') {
-            environment {
-                AWS_ACCESS_KEY = credentials('jenkins_aws_access_key')  // Example region, change to actual value
-                AWS_SECRET_ACCESS_KEY = credentials('jenkins_aws_access_secret_key')  // Example account ID, change to actual value
-                
-            }
-            steps {
-                script {
-                   echo 'deploying docker image to eks...'
-                   sh 'envsubst < kubernetes/deployment.yaml | kubectl apply -f -'
-                   sh 'envsubst < kubernetes/service.yaml | kubectl apply -f -'
-                }
-            }
+       stage('deploy to eks') {
+    environment {
+        AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key')
+        AWS_SECRET_ACCESS_KEY = credentials('jenkins_aws_access_secret_key')
+    }
+    steps {
+        script {
+            echo 'Configuring AWS credentials...'
+            sh '''
+            aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+            aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+            aws configure set region us-east-1
+            '''
+
+            echo 'Updating kubeconfig...'
+            sh 'aws eks update-kubeconfig --name java-app-cluster --region us-east-1'
+
+            echo 'Deploying to EKS...'
+            sh 'envsubst < kubernetes/deployment.yaml | kubectl apply -f -'
+            sh 'envsubst < kubernetes/service.yaml | kubectl apply -f -'
         }
+    }
+}
+
 
 
     }
