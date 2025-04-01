@@ -48,23 +48,36 @@ pipeline {
                 }
             }
         }
-        stage('commit version update') {
+      stage('commit version update') {
     steps {
         script {
             // Configure Git user information
             sh 'git config --global user.name "lupin"'
             sh 'git config --global user.email "jenkins@yourdomain.com"'
 
-            withCredentials([usernamePassword(credentialsId: 'github-cred', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-            sh "git remote set-url origin https://${USER}:${PASS}@github.com/lupindevv/java-maven-app-last-video-k8s.git"
-            sh 'git add .'
-            sh 'git commit -m "ci: version bump"'
-            sh 'git push origin HEAD:main'
+            // Stash or commit local changes before switching branches
+            sh '''
+                git add .
+                git commit -m "WIP: saving changes before switching branches" || echo "No changes to commit"
+            '''
 
+            // Checkout the main branch
+            sh 'git fetch origin'
+            sh 'git checkout main || git checkout -b main'
+
+            // Set the remote URL with credentials
+            withCredentials([usernamePassword(credentialsId: 'github-cred', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                sh "git remote set-url origin https://${USER}:${PASS}@github.com/lupindevv/java-maven-app-last-video-k8s.git"
+                
+                // Add, commit, and push changes
+                sh 'git add .'
+                sh 'git commit -m "ci: version bump"'
+                sh 'git push origin main'
             }
         }
     }
 }
+
 
     }
 }
