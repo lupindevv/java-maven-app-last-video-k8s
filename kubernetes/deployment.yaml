@@ -18,7 +18,7 @@ spec:
         - name: docker-hub-secret  # Fix indentation
       containers: 
         - name: java-app
-          image: alexthm1/java-k8s:$IMAGE_NAME
+          image: alexthm1/java-k8s:1.1.12-27
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
