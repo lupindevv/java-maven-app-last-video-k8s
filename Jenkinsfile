@@ -56,23 +56,11 @@ pipeline {
             sh 'git config --global user.email "jenkins@yourdomain.com"'
 
             withCredentials([usernamePassword(credentialsId: 'github-cred', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                // Ensure the correct branch is checked out
-                sh '''
-                git fetch origin  # Fetch the latest from the remote
-                git checkout main || git checkout -b main  # Checkout main or create it if it doesn't exist
-                '''
+            sh "git remote set-url origin https://${USER}:${PASS}@github.com/lupindevv/java-maven-app-last-video-k8s.git"
+            sh 'git add .'
+            sh 'git commit -m "ci: version bump"'
+            sh 'git push origin HEAD:main'
 
-                // Set the remote URL with credentials (Ensure URL is correct)
-                sh "git remote set-url origin https://${USER}:${PASS}@github.com/lupindevv/java-maven-app-last-video-k8s.git"
-                
-                // Add changes to git staging area
-                sh 'git add .'
-
-                // Commit changes
-                sh 'git commit -m "ci: version bump"'
-
-                // Push to the correct branch (main)
-                sh 'git push origin main'
             }
         }
     }
