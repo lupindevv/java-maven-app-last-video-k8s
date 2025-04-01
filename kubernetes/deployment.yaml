@@ -14,11 +14,11 @@ spec:
       labels:
         app: java-app
     spec:
-    imagePullSecrets:
-      - name: docker-hub-secret
-    containers: 
-      - name: java-app
-        image: alexthm1/java-k8s:$IMAGE_NAME
-        imagePullPolicy: Always
-        ports:
-          - containerPort: 8080
+      imagePullSecrets:
+        - name: docker-hub-secret  # Fix indentation
+      containers: 
+        - name: java-app
+          image: alexthm1/java-k8s:$IMAGE_NAME
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
