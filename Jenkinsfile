@@ -53,9 +53,7 @@ pipeline {
             environment {
                 AWS_ACCESS_KEY = credentials('jenkins_aws_access_key')  // Example region, change to actual value
                 AWS_SECRET_ACCESS_KEY = credentials('jenkins_aws_access_secret_key')  // Example account ID, change to actual value
-                AWS_REGION = 'us-east-1'  // Example region, change to actual value
-                CLUSTER_NAME = 'java-app-cluster'  // Example cluster name, change to actual value
-                APP_NAME = 'java-app'  // Example app name, change to actual value
+                
             }
             steps {
                 script {
